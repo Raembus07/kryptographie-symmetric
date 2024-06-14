@@ -15,6 +15,5 @@
 package ch.abacus.components;
 
 public enum Gender {
-  MALE,
-  FEMALE
+  MALE
 }

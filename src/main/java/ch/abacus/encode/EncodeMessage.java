@@ -14,7 +14,6 @@
  */
 package ch.abacus.encode;
 
-import ch.abacus.SecurityUtil;
 import ch.abacus.common.Const;
 
 import javax.crypto.BadPaddingException;
@@ -31,14 +30,14 @@ import java.util.Base64;
 
 public class EncodeMessage {
 
-  public String encode(String message, SecretKey secretKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
-    final var cipher = Cipher.getInstance(Const.AES); //falls einen error gibt, dann muss hier mehr als nur AES rein!!!
+  public String encode(String message, SecretKey sessionKey) throws NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+    final var cipher = Cipher.getInstance(Const.AES_GCM_NO_PADDING);
     final var gcmParameter = getGcmParameter();
-    final var gcmParameterBas64 = Base64.getEncoder().encodeToString(gcmParameter.getIV());
-    cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameter);
+    final var gcmParameterBase64 = Base64.getEncoder().encodeToString(gcmParameter.getIV());
+    cipher.init(Cipher.ENCRYPT_MODE, sessionKey, gcmParameter);
     final var encodedMessage = cipher.doFinal(message.getBytes());
     final var encodedMessageBase64 = Base64.getEncoder().encodeToString(encodedMessage);
-    return gcmParameterBas64 + ":" + encodedMessageBase64;
+    return gcmParameterBase64 + ":" + encodedMessageBase64;
   }
 
   public GCMParameterSpec getGcmParameter() throws NoSuchAlgorithmException, NoSuchPaddingException {

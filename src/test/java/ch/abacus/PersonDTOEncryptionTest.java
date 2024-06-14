@@ -17,8 +17,8 @@ package ch.abacus;
 import ch.abacus.components.AddressDTO;
 import ch.abacus.components.Gender;
 import ch.abacus.components.PersonDTO;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import ch.abacus.decode.DecodeMessage;
+import ch.abacus.encode.EncodeMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,40 +26,57 @@ import javax.crypto.SecretKey;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PersonDTOEncryptionTest {
 
-  //private final SymmetricDecryption symmetricDecryption = new SymmetricDecryption();
-  //private final SymmetricEncryption symmetricEncryption = new SymmetricEncryption();
-  private final SecurityUtil securityUtil = new SecurityUtil();
+  private SymmetricCrypting symmetricCrypting;
+  private DecodeMessage decode;
+  private EncodeMessage encode;
 
-  private static final String expected = """
-      {
-        "firstname": "Josia",
-        "lastname": "Schweizer",
-        "birthday": [
-          2007,
-          1,
-          1
-        ],
-        "gender": "MALE",
-        "addressDTO": {
-          "street": "Schwarzenbach",
-          "number": "2178",
-          "city": "Gossau",
-          "plz": 9200,
-          "country": "Switzerland"
-        }
-      }""";
+  private final AddressDTO addressDTO = new AddressDTO(2L, "Schwarzenbach", "2178", "Gossau", 9200, "Switzerland");
+  private final PersonDTO personDTO = new PersonDTO(1L, "Josia", "Schweizer", LocalDate.of(2007, 1, 1), Gender.MALE, addressDTO);
 
-  @Test
-  void testEncryptionDecryption() throws Exception {
-    String text = "Hello, World!";
-    SecretKey key = securityUtil.getSymetricKey();
-    // String encrypted = symmetricEncryption.encrypt(text);
-    // String decrypted = symmetricDecryption.decrypt(encrypted);
-    assertEquals(text, decrypted);
+  @BeforeEach
+  public void setUp() {
+    symmetricCrypting = new SymmetricCrypting();
+    decode = new DecodeMessage();
+    encode = new EncodeMessage();
   }
 
+  @Test
+  void testTaskOne() throws Exception {
+    String text = "Hello World!";
+    SecretKey sessionKey = SecurityUtil.createSessionKey();
+    String encryptedText = encode.encode(text, sessionKey);
+    String decryptedText = decode.decode(encryptedText, sessionKey);
+    assertEquals(text, decryptedText);
+  }
+
+  @Test
+  void testTaskTwo() throws Exception{
+    SecretKey sessionKey = SecurityUtil.createSessionKey();
+    String encryptedPersonDTO = symmetricCrypting.encodePersonDTO(personDTO, sessionKey);
+    PersonDTO decryptedPersonDTO = symmetricCrypting.decodePersonDTO(encryptedPersonDTO, sessionKey);
+
+    assertEquals(personDTO, decryptedPersonDTO);
+  }
+
+
+  @Test
+  void testTaskThree() throws Exception{
+    SecuredMessage securedmessage = symmetricCrypting.storeToSecuredMessage(personDTO);
+    PersonDTO decryptedPersonDTO = symmetricCrypting.retrieveFromSecuredMessage(securedmessage);
+
+    assertEquals(personDTO, decryptedPersonDTO);
+  }
+
+  @Test
+  void testTastkFour() throws Exception{
+    SecuredMessage securedmessage = symmetricCrypting.storeToSecuredMessage(personDTO);
+    String securedMessageJson = symmetricCrypting.convertSecretMessageToJson(securedmessage);
+    SecuredMessage securedMessage = symmetricCrypting.convertJsonToSecuredMessage(securedMessageJson);
+    PersonDTO decryptedPersonDTO = symmetricCrypting.retrieveFromSecuredMessage(securedMessage);
+
+    assertEquals(personDTO, decryptedPersonDTO);
+  }
 }

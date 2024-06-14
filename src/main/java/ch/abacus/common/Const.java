@@ -15,10 +15,12 @@
 package ch.abacus.common;
 
 public class Const {
+  private Const(){
+    //this constructor has to be empty
+  }
+
   public static final String AES = "AES";
+  public static final String AES_GCM_NO_PADDING = "AES/GCM/NoPadding";
   public static final int TAG_LENGTH = 128;
   public static final String SYMETRIC_ALGORITHM_SAVE = "AES/GCM/NoPadding";
-
-  public static final String ERROR_SERIALIZE_PERSON_DTO = "Error serializing PersonDTO";
-  public static final String ERROR_DESERIALIZE_PERSON_DTO = "Error deserializing PersonDTO";
 }
