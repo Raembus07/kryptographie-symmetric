@@ -27,7 +27,7 @@ public class SecurityUtil {
     return KeyGenerator.getInstance(Const.AES).generateKey();
   }
 
-  public static SecretKey createSesssionKeyFromKeystrign(String keyString){
+  public static SecretKey createSesssionKeyFromKeystrign(String keyString) {
     return new SecretKeySpec(keyString.getBytes(), Const.AES);
   }
 }

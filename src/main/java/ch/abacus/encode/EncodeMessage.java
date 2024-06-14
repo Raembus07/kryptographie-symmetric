@@ -26,6 +26,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 import java.util.Base64;
 
 public class EncodeMessage {
@@ -40,8 +41,10 @@ public class EncodeMessage {
     return gcmParameterBas64 + ":" + encodedMessageBase64;
   }
 
-  public GCMParameterSpec getGcmParameter() {
-    final var gcmNonceByte = new byte[Const.GCMNONCELENGTH];
-    return new GCMParameterSpec(Const.TAG_LENGTH, gcmNonceByte);
+  public GCMParameterSpec getGcmParameter() throws NoSuchAlgorithmException, NoSuchPaddingException {
+    final var random = SecureRandom.getInstanceStrong();
+    final var iv = new byte[Cipher.getInstance(Const.SYMETRIC_ALGORITHM_SAVE).getBlockSize()];
+    random.nextBytes(iv);
+    return new GCMParameterSpec(Const.TAG_LENGTH, iv);
   }
 }
