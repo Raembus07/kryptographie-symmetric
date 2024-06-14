@@ -16,6 +16,8 @@ package ch.abacus.common;
 
 public class Const {
   public static final String AES = "AES";
+  public static final int TAG_LENGTH = 128;
+  public static final int GCMNONCELENGTH = 12;
 
   public static final String ERROR_SERIALIZE_PERSON_DTO = "Error serializing PersonDTO";
   public static final String ERROR_DESERIALIZE_PERSON_DTO = "Error deserializing PersonDTO";
