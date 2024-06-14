@@ -22,6 +22,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import javax.crypto.SecretKey;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,42 +30,36 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class PersonDTOEncryptionTest {
 
-  private PersonDTO person;
-  private PersonDTOEncryption personDTOEncryption;
-  private ObjectMapper mapper;
+  //private final SymmetricDecryption symmetricDecryption = new SymmetricDecryption();
+  //private final SymmetricEncryption symmetricEncryption = new SymmetricEncryption();
+  private final SecurityUtil securityUtil = new SecurityUtil();
 
-  @BeforeEach
-  public void setUp() {
-    person = new PersonDTO(1L, "Max", "Mustermann", LocalDate.of(2007, 1, 1), Gender.MALE, new AddressDTO(2L, "Musterstadt", "12345", "Musterstadt", 9292, "Musterland"));
-
-    personDTOEncryption = new PersonDTOEncryption();
-    mapper = new ObjectMapper();
-  }
+  private static final String expected = """
+      {
+        "firstname": "Josia",
+        "lastname": "Schweizer",
+        "birthday": [
+          2007,
+          1,
+          1
+        ],
+        "gender": "MALE",
+        "addressDTO": {
+          "street": "Schwarzenbach",
+          "number": "2178",
+          "city": "Gossau",
+          "plz": 9200,
+          "country": "Switzerland"
+        }
+      }""";
 
   @Test
-  public void testStoreToSecuredMessage() throws CryptographieException, JsonProcessingException {
-    personDTOEncryption.storeToSecuredMessage(person);
-    SecuredMessage securedMessage = personDTOEncryption.getSecuredMessage();
-
-    assertNotNull(securedMessage);
-    assertNotNull(securedMessage.sessionKey());
-    assertNotNull(securedMessage.message());
-
-    String jsonSecuredMessage = personDTOEncryption.securedMessageToJson();
-    assertNotNull(jsonSecuredMessage);
-
-    SecuredMessage deserializedMessage = personDTOEncryption.jsonToSecuredMessage(jsonSecuredMessage);
-    assertNotNull(deserializedMessage);
-    assertEquals(securedMessage.sessionKey(), deserializedMessage.sessionKey());
-    assertEquals(securedMessage.message(), deserializedMessage.message());
-
-    PersonDTO decryptedPerson = personDTOEncryption.decryptSecuredMessage(deserializedMessage);
-
-    assertNotNull(decryptedPerson);
-    assertEquals(person.firstname(), decryptedPerson.firstname());
-    assertEquals(person.lastname(), decryptedPerson.lastname());
-    assertEquals(person.addressDTO().street(), decryptedPerson.addressDTO().street());
-    assertEquals(person.addressDTO().city(), decryptedPerson.addressDTO().city());
-    assertEquals(person.addressDTO().plz(), decryptedPerson.addressDTO().plz());
+  void testEncryptionDecryption() throws Exception {
+    String text = "Hello, World!";
+    SecretKey key = securityUtil.getSymetricKey();
+    // String encrypted = symmetricEncryption.encrypt(text);
+    // String decrypted = symmetricDecryption.decrypt(encrypted);
+    assertEquals(text, decrypted);
   }
+
 }

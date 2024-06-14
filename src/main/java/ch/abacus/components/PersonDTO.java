@@ -20,9 +20,8 @@ import jakarta.annotation.Nullable;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public record PersonDTO(@Nullable Long id, @Nonnull String firstname, @Nonnull String lastname, @Nonnull LocalDate birthday, @Nonnull Gender gender, @Nonnull AddressDTO addressDTO) {
-
-
+public record PersonDTO(@Nullable Long id, @Nonnull String firstname, @Nonnull String lastname,
+                        @Nonnull LocalDate birthday, @Nonnull Gender gender, @Nonnull AddressDTO addressDTO) {
 
   @Override
   public boolean equals(Object o) {

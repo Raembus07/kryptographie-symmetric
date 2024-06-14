@@ -19,7 +19,8 @@ import jakarta.annotation.Nullable;
 
 import java.util.Objects;
 
-public record AddressDTO(@Nullable Long id, @Nonnull String street, @Nonnull String number, @Nonnull String city, @Nonnull Integer plz, @Nonnull String country) {
+public record AddressDTO(@Nullable Long id, @Nonnull String street, @Nonnull String number, @Nonnull String city,
+                         @Nonnull Integer plz, @Nonnull String country) {
 
   @Override
   public boolean equals(Object o) {

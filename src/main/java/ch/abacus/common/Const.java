@@ -1,11 +1,11 @@
 /*
- * ErrorConst.java
+ * Const.java
  *
  * Creator:
- * 13.06.2024 14:53 josia.schweizer
+ * 14.06.2024 07:44 josia.schweizer
  *
  * Maintainer:
- * 13.06.2024 14:53 josia.schweizer
+ * 14.06.2024 07:44 josia.schweizer
  *
  * Last Modification:
  * $Id:$
@@ -14,7 +14,9 @@
  */
 package ch.abacus.common;
 
-public class ErrorConst {
+public class Const {
+  public static final String AES = "AES";
+
   public static final String ERROR_SERIALIZE_PERSON_DTO = "Error serializing PersonDTO";
   public static final String ERROR_DESERIALIZE_PERSON_DTO = "Error deserializing PersonDTO";
 }
